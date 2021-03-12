@@ -71,10 +71,6 @@ while True :
 			maze = [[0 for i in range(25)] for j in range(25)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
-			root.fill((0,0,0))
-			p.display.update()
-			#continue
-			#quit()
 		else :
 			maze[player_pos[0]][player_pos[1]-1] = 2
 			maze[player_pos[0]][player_pos[1]] = 1
@@ -87,9 +83,6 @@ while True :
 			maze = [[0 for i in range(25)] for j in range(25)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
-			root.fill((0,0,0))
-			p.display.update()
-			#continue
 		else :
 			maze[player_pos[0]][player_pos[1]+1] = 2
 			maze[player_pos[0]][player_pos[1]] = 1
@@ -102,9 +95,6 @@ while True :
 			maze = [[0 for i in range(25)] for j in range(25)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
-			root.fill((0,0,0))
-			p.display.update()
-			#continue
 		else :
 			maze[player_pos[0]-1][player_pos[1]] = 2
 			maze[player_pos[0]][player_pos[1]] = 1
@@ -117,13 +107,11 @@ while True :
 			maze = [[0 for i in range(25)] for j in range(25)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
-			root.fill((0,0,0))
-			p.display.update()
-			#continue
 		else :
 			maze[player_pos[0]+1][player_pos[1]] = 2
 			maze[player_pos[0]][player_pos[1]] = 1
 
+	root.fill((0,0,0))
 	#if find_player(maze) not in visited_cells :
 	visited_cells.append(find_player(maze))
 	y_pos = 0
