@@ -66,3 +66,110 @@ def generate_maze(maze) :
 		out_cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
 	maze[in_cell[0]][in_cell[1]] = 2
 	maze[out_cell[0]][out_cell[1]] = 3
+
+def find_player(maze) :
+	for line in maze :
+		for cell in line :
+			if cell == 2 :
+					return [maze.index(line), line.index(cell)]
+
+def find_direction(maze) :
+	player_pos = find_player(maze)
+	directions = []
+	if player_pos[0] > 0 :
+		if maze[player_pos[0]-1][player_pos[1]] :
+			directions.append("up")
+	if player_pos[0] < len(maze)-1 :
+		if maze[player_pos[0]+1][player_pos[1]] :
+			directions.append("down")
+	if player_pos[1] > 0 :
+		if maze[player_pos[0]][player_pos[1]-1] :
+			directions.append("left")
+	if player_pos[1] < len(maze[0])-1 :
+		if maze[player_pos[0]][player_pos[1]+1] :
+			directions.append("right")
+	return directions
+
+class maze_solver :
+	def __init__(self) :
+		self.visited_cells = []
+		self.n = 0
+	def solve(self, maze) :
+		player_pos = find_player(maze)
+		possible_directions = find_direction(maze)
+		if "left" in possible_directions :
+			if [player_pos[0], player_pos[1]-1] in self.visited_cells :
+				possible_directions.remove("left")
+		if "right" in possible_directions :
+			if [player_pos[0], player_pos[1]+1] in self.visited_cells :
+				possible_directions.remove("right")
+		if "up" in possible_directions :
+			if [player_pos[0]-1, player_pos[1]] in self.visited_cells :
+				possible_directions.remove("up")
+		if "down" in possible_directions :
+			if [player_pos[0]+1, player_pos[1]] in self.visited_cells :
+				possible_directions.remove("down")
+
+		if possible_directions : 
+			direction = random.choice(possible_directions)
+			self.n = len(self.visited_cells)-1
+		else :
+			#print("dead end")
+			maze[player_pos[0]][player_pos[1]] = 1
+			player_pos = self.visited_cells[self.n].copy()
+			maze[player_pos[0]][player_pos[1]] = 2
+			direction = ""
+			self.n -= 1
+			#player_pos = forks.pop().copy()
+			#visited_cells.remove(player_pos)
+		if direction == "left" :
+			if maze[player_pos[0]][player_pos[1]-1] == 3 :
+				print("ended with : "+str(len(self.visited_cells))+" steps")
+				del maze
+				del player_pos
+				del self.visited_cells
+				maze = [[0 for i in range(25)] for j in range(25)]
+				generate_maze(maze)
+				self.visited_cells = []
+			else :
+				maze[player_pos[0]][player_pos[1]-1] = 2
+				maze[player_pos[0]][player_pos[1]] = 1
+		if direction == "right" :
+			if maze[player_pos[0]][player_pos[1]+1] == 3 :
+				print("ended with : "+str(len(self.visited_cells))+" steps")
+				del maze
+				del player_pos
+				del self.visited_cells
+				maze = [[0 for i in range(25)] for j in range(25)]
+				generate_maze(maze)
+				self.visited_cells = []
+			else :
+				maze[player_pos[0]][player_pos[1]+1] = 2
+				maze[player_pos[0]][player_pos[1]] = 1
+		if direction == "up" :
+			if maze[player_pos[0]-1][player_pos[1]] == 3 :
+				print("ended with : "+str(len(self.visited_cells))+" steps")
+				del maze
+				del player_pos
+				del self.visited_cells
+				maze = [[0 for i in range(25)] for j in range(25)]
+				generate_maze(maze)
+				self.visited_cells = []
+			else :
+				maze[player_pos[0]-1][player_pos[1]] = 2
+				maze[player_pos[0]][player_pos[1]] = 1
+		if direction == "down" :
+			if maze[player_pos[0]+1][player_pos[1]] == 3 :
+				print("ended with : "+str(len(self.visited_cells))+" steps")
+				del maze
+				del player_pos
+				del self.visited_cells
+				maze = [[0 for i in range(25)] for j in range(25)]
+				generate_maze(maze)
+				self.visited_cells = []
+			else :
+				maze[player_pos[0]+1][player_pos[1]] = 2
+				maze[player_pos[0]][player_pos[1]] = 1
+
+		#if find_player(maze) not in visited_cells :
+		self.visited_cells.append(find_player(maze))

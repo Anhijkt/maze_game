@@ -25,12 +25,13 @@ def find_direction(maze) :
 			directions.append("right")
 	return directions
 
-maze = [[0 for i in range(25)] for j in range(25)]
+maze_x = 18
+maze_y = 18
+maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 maze_gen.generate_maze(maze)
 print(find_direction(maze))
 
-root = p.display.set_mode((650,650))
-root.fill((0,0,0))
+root = p.display.set_mode((800,800))
 
 visited_cells = []
 
@@ -68,7 +69,7 @@ while True :
 			del maze
 			del player_pos
 			del visited_cells
-			maze = [[0 for i in range(25)] for j in range(25)]
+			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
 		else :
@@ -80,7 +81,7 @@ while True :
 			del maze
 			del player_pos
 			del visited_cells
-			maze = [[0 for i in range(25)] for j in range(25)]
+			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
 		else :
@@ -92,7 +93,7 @@ while True :
 			del maze
 			del player_pos
 			del visited_cells
-			maze = [[0 for i in range(25)] for j in range(25)]
+			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
 		else :
@@ -104,28 +105,39 @@ while True :
 			del maze
 			del player_pos
 			del visited_cells
-			maze = [[0 for i in range(25)] for j in range(25)]
+			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 			maze_gen.generate_maze(maze)
 			visited_cells = []
 		else :
 			maze[player_pos[0]+1][player_pos[1]] = 2
 			maze[player_pos[0]][player_pos[1]] = 1
 
-	root.fill((0,0,0))
 	#if find_player(maze) not in visited_cells :
 	visited_cells.append(find_player(maze))
+
+	root.fill((0,0,0))
 	y_pos = 0
 	for line in maze :
 		x_pos = 0
 		for cell in line :
 			if cell == 1 :
-				p.draw.rect(root, (255,255,255), (x_pos,y_pos,25,25))
-			if cell == 2 :
-				p.draw.rect(root, (0,150,0), (x_pos,y_pos,25,25))
-			if cell == 3 :
-				p.draw.rect(root, (150,0,0), (x_pos,y_pos,25,25))
-			x_pos += 25
-		y_pos += 25
+				img = p.image.load('res/floor.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 2 :
+				img = p.image.load('res/player.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 3 :
+				img = p.image.load('res/end.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			else :
+				img = p.image.load('res/wall.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			x_pos += 40
+		y_pos += 40
 	for i in p.event.get():
 		if i.type==	p.QUIT:
 			quit()
