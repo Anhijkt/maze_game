@@ -25,7 +25,7 @@ def find_direction(maze) :
 			directions.append("right")
 	return directions
 
-maze_x = 18
+maze_x = 20
 maze_y = 18
 maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 maze_gen.generate_maze(maze)
@@ -121,19 +121,19 @@ while True :
 		x_pos = 0
 		for cell in line :
 			if cell == 1 :
-				img = p.image.load('res/floor.png')
+				img = p.image.load('res/dungeon/floor.png')
 				img = p.transform.scale(img, (35,35))
 				root.blit(img, (x_pos, y_pos))
 			elif cell == 2 :
-				img = p.image.load('res/player.png')
+				img = p.image.load('res/dungeon/player.png')
 				img = p.transform.scale(img, (35,35))
 				root.blit(img, (x_pos, y_pos))
 			elif cell == 3 :
-				img = p.image.load('res/end.png')
+				img = p.image.load('res/dungeon/end.png')
 				img = p.transform.scale(img, (35,35))
 				root.blit(img, (x_pos, y_pos))
 			else :
-				img = p.image.load('res/wall.png')
+				img = p.image.load('res/dungeon/wall.png')
 				img = p.transform.scale(img, (35,35))
 				root.blit(img, (x_pos, y_pos))
 			x_pos += 40
