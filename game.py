@@ -9,21 +9,21 @@ maze_y = 18
 maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 maze_gen.generate_maze(maze)
 
-root = p.display.set_mode((800,800))
+root = p.display.set_mode((1000,800))
 
 solver = maze_gen.maze_solver()
 hero = role_game.player()
+p.font.init()
+f1 = p.font.Font(None, 30)
 
 while True :
 	n = solver.solve(maze)
-	print(n)
-	print(hero.hp)
 	if n :
 		if n[0] == "end" :
 			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 			maze_gen.generate_maze(maze)
 		if n[0] == "fight":
-			res = hero.fight(n[1]-3)
+			res = hero.fight(n[1]-3, root)
 			if res == "win" :
 				hero_pos = maze_gen.find_player(maze)
 				if n[2] == "left" :
@@ -64,6 +64,14 @@ while True :
 				if n[1] == "down" :
 					maze[hero_pos[0]+1][hero_pos[1]] = 1
 	root.fill((0,0,0))
+	player_hp_text = f1.render("Player hp:  {}".format(str(hero.hp)), True, (255, 255, 255))
+	player_max_hp_text = f1.render("Player max-hp:  {}".format(str(hero.max_hp)), True, (255, 255, 255))
+	player_attack_text = f1.render("Player attack:  {}".format(str(hero.attack)), True, (255, 255, 255))
+	player_deffense_text = f1.render("Player deffense:  {}".format(str(hero.deffense)), True, (255, 255, 255))
+	root.blit(player_hp_text, (800, 40))
+	root.blit(player_max_hp_text, (800, 80))
+	root.blit(player_attack_text, (800, 120))
+	root.blit(player_deffense_text, (800, 160))
 	y_pos = 0
 	for line in maze :
 		x_pos = 0
