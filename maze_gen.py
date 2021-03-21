@@ -58,7 +58,20 @@ def generate_maze(maze) :
 				gen = False
 				break
 			cell = visited_cells[i].copy()			
-	in_cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
+
+	for i in range(1,random.randint(10,20)) : #enemy generation
+		cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
+		while maze[cell[0]][cell[1]] == 0 :
+			cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
+		maze[cell[0]][cell[1]] = random.randint(4,9)
+	
+	for i in range(1,random.randint(5,15)) : #generating potions
+		cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
+		while maze[cell[0]][cell[1]] == 0 :
+			cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
+		maze[cell[0]][cell[1]] = random.randint(10,11)
+
+	in_cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)] #in and out of the dungeon
 	out_cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
 	while maze[in_cell[0]][in_cell[1]] == 0 :
 		in_cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
@@ -128,9 +141,14 @@ class maze_solver :
 				del maze
 				del player_pos
 				del self.visited_cells
-				maze = [[0 for i in range(25)] for j in range(25)]
-				generate_maze(maze)
 				self.visited_cells = []
+				return ["end"]
+			elif maze[player_pos[0]][player_pos[1]-1] >= 4 and maze[player_pos[0]][player_pos[1]-1] <= 9:
+				return ["fight", maze[player_pos[0]][player_pos[1]-1], "left"]
+			elif maze[player_pos[0]][player_pos[1]-1] == 10 :
+				return ["heal", "left"]
+			elif maze[player_pos[0]][player_pos[1]-1] == 11 :
+				return ["poison", "left"]
 			else :
 				maze[player_pos[0]][player_pos[1]-1] = 2
 				maze[player_pos[0]][player_pos[1]] = 1
@@ -140,9 +158,14 @@ class maze_solver :
 				del maze
 				del player_pos
 				del self.visited_cells
-				maze = [[0 for i in range(25)] for j in range(25)]
-				generate_maze(maze)
 				self.visited_cells = []
+				return ["end"]
+			elif maze[player_pos[0]][player_pos[1]+1] >= 4 and maze[player_pos[0]][player_pos[1]+1] <= 9:
+				return ["fight", maze[player_pos[0]][player_pos[1]+1], "right"]
+			elif maze[player_pos[0]][player_pos[1]+1] == 10 :
+				return ["heal", "right"]
+			elif maze[player_pos[0]][player_pos[1]+1] == 11 :
+				return ["poison", "right"]
 			else :
 				maze[player_pos[0]][player_pos[1]+1] = 2
 				maze[player_pos[0]][player_pos[1]] = 1
@@ -152,9 +175,14 @@ class maze_solver :
 				del maze
 				del player_pos
 				del self.visited_cells
-				maze = [[0 for i in range(25)] for j in range(25)]
-				generate_maze(maze)
 				self.visited_cells = []
+				return ["end"]
+			elif maze[player_pos[0]-1][player_pos[1]] >= 4 and maze[player_pos[0]-1][player_pos[1]] <= 9:
+				return ["fight", maze[player_pos[0]-1][player_pos[1]], "up"]
+			elif maze[player_pos[0]-1][player_pos[1]] == 10 :
+				return ["heal", "up"]
+			elif maze[player_pos[0]-1][player_pos[1]] == 11 :
+				return ["poison", "up"]
 			else :
 				maze[player_pos[0]-1][player_pos[1]] = 2
 				maze[player_pos[0]][player_pos[1]] = 1
@@ -164,9 +192,14 @@ class maze_solver :
 				del maze
 				del player_pos
 				del self.visited_cells
-				maze = [[0 for i in range(25)] for j in range(25)]
-				generate_maze(maze)
 				self.visited_cells = []
+				return ["end"]
+			elif maze[player_pos[0]+1][player_pos[1]] >= 4 and maze[player_pos[0]+1][player_pos[1]] <= 9 :
+				return ["fight", maze[player_pos[0]+1][player_pos[1]], "down"]
+			elif maze[player_pos[0]+1][player_pos[1]] == 10 :
+				return ["heal", "down"]
+			elif maze[player_pos[0]+1][player_pos[1]] == 11 :
+				return ["poison", "down"]
 			else :
 				maze[player_pos[0]+1][player_pos[1]] = 2
 				maze[player_pos[0]][player_pos[1]] = 1

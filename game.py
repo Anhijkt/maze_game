@@ -1,120 +1,68 @@
 import maze_gen
 import pygame as p
+import role_game
 from time import sleep
 from random import choice
-
-def find_player(maze) :
-	for line in maze :
-		for cell in line :
-			if cell == 2 :
-					return [maze.index(line), line.index(cell)]
-def find_direction(maze) :
-	player_pos = find_player(maze)
-	directions = []
-	if player_pos[0] > 0 :
-		if maze[player_pos[0]-1][player_pos[1]] :
-			directions.append("up")
-	if player_pos[0] < len(maze)-1 :
-		if maze[player_pos[0]+1][player_pos[1]] :
-			directions.append("down")
-	if player_pos[1] > 0 :
-		if maze[player_pos[0]][player_pos[1]-1] :
-			directions.append("left")
-	if player_pos[1] < len(maze[0])-1 :
-		if maze[player_pos[0]][player_pos[1]+1] :
-			directions.append("right")
-	return directions
 
 maze_x = 20
 maze_y = 18
 maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 maze_gen.generate_maze(maze)
-print(find_direction(maze))
 
 root = p.display.set_mode((800,800))
 
-visited_cells = []
+solver = maze_gen.maze_solver()
+hero = role_game.player()
 
 while True :
-	player_pos = find_player(maze)
-	possible_directions = find_direction(maze)
-	if "left" in possible_directions :
-		if [player_pos[0], player_pos[1]-1] in visited_cells :
-			possible_directions.remove("left")
-	if "right" in possible_directions :
-		if [player_pos[0], player_pos[1]+1] in visited_cells :
-			possible_directions.remove("right")
-	if "up" in possible_directions :
-		if [player_pos[0]-1, player_pos[1]] in visited_cells :
-			possible_directions.remove("up")
-	if "down" in possible_directions :
-		if [player_pos[0]+1, player_pos[1]] in visited_cells :
-			possible_directions.remove("down")
-
-	if possible_directions : 
-		direction = choice(possible_directions)
-		n = len(visited_cells)-1
-	else :
-		#print("dead end")
-		maze[player_pos[0]][player_pos[1]] = 1
-		player_pos = visited_cells[n].copy()
-		maze[player_pos[0]][player_pos[1]] = 2
-		direction = ""
-		n -= 1
-		#player_pos = forks.pop().copy()
-		#visited_cells.remove(player_pos)
-	if direction == "left" :
-		if maze[player_pos[0]][player_pos[1]-1] == 3 :
-			print("ended with : "+str(len(visited_cells))+" steps")
-			del maze
-			del player_pos
-			del visited_cells
+	n = solver.solve(maze)
+	print(n)
+	print(hero.hp)
+	if n :
+		if n[0] == "end" :
 			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
 			maze_gen.generate_maze(maze)
-			visited_cells = []
-		else :
-			maze[player_pos[0]][player_pos[1]-1] = 2
-			maze[player_pos[0]][player_pos[1]] = 1
-	if direction == "right" :
-		if maze[player_pos[0]][player_pos[1]+1] == 3 :
-			print("ended with : "+str(len(visited_cells))+" steps")
-			del maze
-			del player_pos
-			del visited_cells
-			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
-			maze_gen.generate_maze(maze)
-			visited_cells = []
-		else :
-			maze[player_pos[0]][player_pos[1]+1] = 2
-			maze[player_pos[0]][player_pos[1]] = 1
-	if direction == "up" :
-		if maze[player_pos[0]-1][player_pos[1]] == 3 :
-			print("ended with : "+str(len(visited_cells))+" steps")
-			del maze
-			del player_pos
-			del visited_cells
-			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
-			maze_gen.generate_maze(maze)
-			visited_cells = []
-		else :
-			maze[player_pos[0]-1][player_pos[1]] = 2
-			maze[player_pos[0]][player_pos[1]] = 1
-	if direction == "down" :
-		if maze[player_pos[0]+1][player_pos[1]] == 3 :
-			print("ended with : "+str(len(visited_cells))+" steps")
-			del maze
-			del player_pos
-			del visited_cells
-			maze = [[0 for i in range(maze_x)] for j in range(maze_y)]
-			maze_gen.generate_maze(maze)
-			visited_cells = []
-		else :
-			maze[player_pos[0]+1][player_pos[1]] = 2
-			maze[player_pos[0]][player_pos[1]] = 1
-
-	#if find_player(maze) not in visited_cells :
-	visited_cells.append(find_player(maze))
-
+		if n[0] == "fight":
+			res = hero.fight(n[1]-3)
+			if res == "win" :
+				hero_pos = maze_gen.find_player(maze)
+				if n[2] == "left" :
+					maze[hero_pos[0]][hero_pos[1]-1] = 1
+				if n[2] == "right" :
+					maze[hero_pos[0]][hero_pos[1]+1] = 1
+				if n[2] == "up" :
+					maze[hero_pos[0]-1][hero_pos[1]] = 1
+				if n[2] == "down" :
+					maze[hero_pos[0]+1][hero_pos[1]] = 1	
+			if res == "dead" :
+				print("you dead")
+				break
+		if n[0] == "heal" :
+			hero.heal()
+			hero_pos = maze_gen.find_player(maze)
+			if n[1] == "left" :
+				maze[hero_pos[0]][hero_pos[1]-1] = 1
+			if n[1] == "right" :
+				maze[hero_pos[0]][hero_pos[1]+1] = 1
+			if n[1] == "up" :
+				maze[hero_pos[0]-1][hero_pos[1]] = 1
+			if n[1] == "down" :
+				maze[hero_pos[0]+1][hero_pos[1]] = 1
+		if n[0] == "poison" :
+			res = hero.poison()
+			hero_pos = maze_gen.find_player(maze)
+			if res == "dead" :
+				print("you dead")
+				break
+			else :
+				if n[1] == "left" :
+					maze[hero_pos[0]][hero_pos[1]-1] = 1
+				if n[1] == "right" :
+					maze[hero_pos[0]][hero_pos[1]+1] = 1
+				if n[1] == "up" :
+					maze[hero_pos[0]-1][hero_pos[1]] = 1
+				if n[1] == "down" :
+					maze[hero_pos[0]+1][hero_pos[1]] = 1
 	root.fill((0,0,0))
 	y_pos = 0
 	for line in maze :
@@ -130,6 +78,38 @@ while True :
 				root.blit(img, (x_pos, y_pos))
 			elif cell == 3 :
 				img = p.image.load('res/dungeon/end.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 4 :
+				img = p.image.load('res/monsters/devil.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 5 :
+				img = p.image.load('res/monsters/eye.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 6 :
+				img = p.image.load('res/monsters/ghost.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 7 :
+				img = p.image.load('res/monsters/plague_doctor.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 8 :
+				img = p.image.load('res/monsters/skeleton.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 9 :
+				img = p.image.load('res/monsters/water_ghoul.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 10 :
+				img = p.image.load('res/potions/heal_potion.png')
+				img = p.transform.scale(img, (35,35))
+				root.blit(img, (x_pos, y_pos))
+			elif cell == 11 :
+				img = p.image.load('res/potions/poison.png')
 				img = p.transform.scale(img, (35,35))
 				root.blit(img, (x_pos, y_pos))
 			else :
