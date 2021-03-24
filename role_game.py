@@ -91,8 +91,8 @@ class player():
 		else :
 			self.hp += 25
 	def poison(self) :
-		if self.hp - 25 <= 0 :
+		if self.hp - 15 <= 0 :
 			return "dead"
 		else :
-			self.hp -= 25
+			self.hp -= 15
 			return ""

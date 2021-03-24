@@ -59,17 +59,17 @@ def generate_maze(maze) :
 				break
 			cell = visited_cells[i].copy()			
 
-	for i in range(1,random.randint(10,20)) : #enemy generation
+	for i in range(1,random.randint(5,20)) : #enemy generation
 		cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
-		while maze[cell[0]][cell[1]] == 0 :
+		while maze[cell[0]][cell[1]] != 1 :
 			cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
 		maze[cell[0]][cell[1]] = random.randint(4,9)
 	
 	for i in range(1,random.randint(5,15)) : #generating potions
 		cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
-		while maze[cell[0]][cell[1]] == 0 :
+		while maze[cell[0]][cell[1]] != 1 :
 			cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
-		maze[cell[0]][cell[1]] = random.randint(10,11)
+		maze[cell[0]][cell[1]] = random.choice([10,10,11]) #to make heal potions spawn more then poison
 
 	in_cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)] #in and out of the dungeon
 	out_cell = [random.randint(2,len(maze)-1),random.randint(2,len(maze)-1)]
